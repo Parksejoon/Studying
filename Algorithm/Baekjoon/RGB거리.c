@@ -1,69 +1,53 @@
 #include<stdio.h>
 
-struct Person
-{
-	char name[20];
-	int hight;
-	int weight;
-};
-
-void Output(struct Person* person)
-{
-	printf("\n\n");
-	for (int i = 0; i < 5; i++)
-	{
-		printf("%s\t%d\t%d\n", person[i].name, person[i].hight, person[i].weight);
-	}
-
-	return;
-}
-
-struct Person Input(void)
-{
-	struct Person tempPerson;
-
-	scanf("%s %d %d", tempPerson.name, &tempPerson.hight, &tempPerson.weight);
-
-	return tempPerson;
-}
-
-void swap(struct Person* a, struct Person* b)
-{
-	struct Person temp = *a;
-	*a = *b;
-	*b = temp;
-
-	return;
-}
-
-void sort(struct Person* person)
-{
-	for (int i = 0; i < 5; i++)
-	{
-		for (int j = i; j < 5; j++)
-		{
-			if (person[i].hight > person[j].hight)
-			{
-				swap(&person[i], &person[j]);
-			}
-		}
-	}
-
-	return;
-}
+int street[1000][3];
 
 int main(void)
 {
-	struct Person person[5];
+	int n;
 
-	for (int i = 0; i < 5; i++)
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
 	{
-		person[i] = Input();
+		for (int j = 0; j < 3; j++)
+		{
+			scanf("%d", &street[i][j]);
+		}
 	}
 
-	sort(person);
+	for (int i = n - 1; i > 0; i--)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			int small;
 
-	Output(person);
+			switch (j)
+			{
+			case 0:
+				if (street[i][1] < street[i][2]) small = 1;
+				else small = 2;
+				break;
+			case 1:
+				if (street[i][0] < street[i][2]) small = 0;
+				else small = 2;
+				break;
+			case 2:
+				if (street[i][0] < street[i][1]) small = 0;
+				else small = 1;
+				break;
+			default:
+				break;
+			}
 
-	return 0;
+			street[i - 1][j] += street[i][small];
+		}
+	}
+
+	int small = street[0][0];
+	for (int i = 1; i < 3; i++)
+	{
+		if (small > street[0][i]) small = street[0][i];
+	}
+
+	printf("%d\n", small);
 }
