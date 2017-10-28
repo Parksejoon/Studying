@@ -43,17 +43,6 @@ Color::element_t Color::GetB(void) const
 	return B;
 }
 
-// RGB값 32비트 정수로 변환
-void Color::SetColor32(color32_t var)
-{
-
-}
-
-Color::color32_t Color::GetColor32() const
-{
-	return 0;
-}
-
 // 전체 밝기 변화
 void Color::AdjustBright(int delta)
 {
@@ -71,19 +60,16 @@ void Color::SetRGB(element_t R, element_t G, element_t B)
 // 범위를 벗어나는 수
 int Color::PutInRange(int val)
 {
-	std::cout << val << "\n";
 	if (val <= 0)
 	{
-		return 0;
+		val = 0;
 	}
 	else if (val >= 255)
 	{
-		return 255;
+		val = 255;
 	}
-	else
-	{
-		return val;
-	}
+
+	return val;
 }
 
 // 출력
@@ -97,5 +83,5 @@ void Color::Print(bool endLine) const
 }
 
 // 자주 사용하는 색
-static const Color Black(0, 0, 0);
-static const Color White(255, 255, 255);
+const Color Color::Black(0, 0, 0);
+const Color Color::White(255, 255, 255);

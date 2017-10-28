@@ -27,22 +27,14 @@ int main(void)
 	c2.AdjustBright(50);
 	c2.Print();
 
-	//// c2의 색상을 32비트 값으로 출력
-	//Color::color32_t color = c2.GetColor32();
-	//cout << "c2 = " << color << "\n";
-
-	//// c1의 색상을 32비트 값을 사용하여 변경
-	//c1.SetColor32( color);
-	//c1.Print();
-
 	// ---------------
 	// 정적 멤버의 사용
 
-	//// 검정색 객체의 값 확인
-	////Color::Black.Print();
+	// 검정색 객체의 값 확인
+	Color::Black.Print();
 
-	//// 객체를 검정색으로 초기화
-	//Color c3 = Color::Black;
+	// 객체를 검정색으로 초기화
+	Color c3 = Color::Black;
 
 	return 0;
 }

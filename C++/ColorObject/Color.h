@@ -6,10 +6,7 @@ class Color
 {
 public:
 	// RGB 요소 타입
-	typedef unsigned char element_t;
-
-	// 32비트 색상 타입
-	typedef unsigned long color32_t;
+	typedef unsigned short element_t;
 
 	// 기본 RGB값
 	enum { defR = 255, defG = 255, defB = 255 };
@@ -32,12 +29,6 @@ public:
 	element_t GetR(void) const;
 	element_t GetG(void) const;
 	element_t GetB(void) const;
-
-	// RGB 32비트 정수형식
-	// 32비트 중 24비트만 사용
-	// 요소당 8비트
-	void SetColor32(color32_t var);
-	color32_t GetColor32() const;
 
 	// 색상 밝기 변화
 	void AdjustBright(int delta);
