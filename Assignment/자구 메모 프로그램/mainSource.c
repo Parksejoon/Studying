@@ -1,15 +1,26 @@
 #include <stdio.h>
 #include <conio.h>
+#include <Windows.h>
 
-void printContents(FILE* readContents_fp);
-void saveContents(FILE* saveContents_fp);
+	   void realMain();																//메인
+	   void printContents(FILE* readContents_fp);									//파일에 저장된 메모를 출력
+	   void saveContents(FILE* saveContents_fp);									//파일에 메모를 저장
+static int  SetRegistry(LPCWSTR IpValueName, LPCWSTR IpExeFile);					//시작 레지스트리에 등록
 
 int main()
 {
-	char ch;		//명령 입력
+	realMain();
 
-	//메모 출력
-	FILE* readContents_fp = fopen("text.txt", "r");		//읽기형으로 파일 오픈
+	return 0;
+}
+
+//메인
+void realMain()
+{
+	char ch;		//입력된 명령어
+	
+	//읽기형으로 파일 오픈
+	FILE* readContents_fp = fopen("text.txt", "r");	
 
 	printContents(readContents_fp);
 
@@ -22,27 +33,29 @@ int main()
 		{
 			if (getch() == 'x')
 			{
-				break;
+				//프로그램 종료
+				return;
 			}
 
 			//메모 작성
-			FILE* saveContents_fp = fopen("text.txt", "w");		//쓰기형으로 파일 오픈
+			//쓰기형으로 파일 오픈
+			FILE* saveContents_fp = fopen("text.txt", "w");
 
 			saveContents(saveContents_fp);
 
 			fclose(saveContents_fp);
 
-			break;
+			return;
 		}
 	}
 
-	return 0;
+	return;
 }
 
 //파일에 있는걸 읽어 화면에 출력
 void printContents(FILE* readContents_fp)
 {
-	char ch;
+	char ch;						//메모 출력시에 사용
 
 	ch = fgetc(readContents_fp);
 	if (ch == NULL)
@@ -53,13 +66,13 @@ void printContents(FILE* readContents_fp)
 	{
 		printf("메모된 내용\n");
 
+		//파일의 끝까지 검사
 		while (ch != EOF)
 		{
 			printf("%c", ch);
 			ch = fgetc(readContents_fp);
 		}
 	}
-
 	printf("\n\n\n");
 
 	return;
@@ -68,9 +81,46 @@ void printContents(FILE* readContents_fp)
 //입력하여 파일에 저장
 void saveContents(FILE* saveContents_fp)
 {
-	char saveContentsArr[300];
-	
+	char saveContentsArr[300];		//파일에 저장할 문자열
+
 	printf("메모할 내용을 입력하세요 ! (종료시 '?' 입력)\n");
 	scanf("%[^?]s", saveContentsArr);
 	fprintf(saveContents_fp, "%s", saveContentsArr);
+}
+
+//레지스트리에 등록하는 함수
+//출처 : whiteat.com/WhiteAT_c/3288
+//
+//Parameters
+//	IpValueName : 설정할 값의 이름
+//  IpExeFile   : 등록할 exe파일의 경로
+//
+//ReturnValue
+//	0 : Fail
+//  1 : Success
+//
+static int SetRegistry(LPCWSTR IpValueName, LPCWSTR IpExeFile)
+{
+	HKEY hKey;		//레지스트리 파일을 연 후 핸들값을 저장할 곳
+	long lRes;		//
+
+	//인자가 NULL이면 Fail
+	if (IpValueName == NULL || IpExeFile == NULL)
+	{
+		return 0;
+	}
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, (LPCWSTR)"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce", 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	{
+		return 0;
+	}
+
+	lRes = RegSetValueEx(hKey, IpValueName, 0, REG_SZ, (BYTE*)IpExeFile, lstrlen(IpExeFile));
+	RegCloseKey(hKey);
+
+	if (lRes != ERROR_SUCCESS)
+	{
+		return 0;
+	}
+
+	return 1;
 }
