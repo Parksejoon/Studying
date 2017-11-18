@@ -2,10 +2,11 @@
 #include <conio.h>
 #include <Windows.h>
 
-	   void realMain();																//메인
-	   void printContents(FILE* readContents_fp);									//파일에 저장된 메모를 출력
-	   void saveContents(FILE* saveContents_fp);									//파일에 메모를 저장
-static int  SetRegistry(LPCWSTR IpValueName, LPCWSTR IpExeFile);					//시작 레지스트리에 등록
+void		realMain();																//메인
+void		printContents(FILE* readContents_fp);									//파일에 저장된 메모를 출력
+void		saveContents(FILE* saveContents_fp);									//파일에 메모를 저장
+wchar_t* ConverCtoWC(char* str);
+static int		SetRegistry(LPCWSTR IpValueName, LPCWSTR IpExeFile);					//시작 레지스트리에 등록
 
 int main()
 {
@@ -17,10 +18,11 @@ int main()
 //메인
 void realMain()
 {
-	char ch;		//입력된 명령어
-	
-	//읽기형으로 파일 오픈
-	FILE* readContents_fp = fopen("text.txt", "r");	
+	char    ch;																	//입력된 명령어
+	LPCWSTR route = ConverCtoWC("C:\\Users\\dsm2017\\Desktop\\text.ext");		//exe파일의 경로
+
+																				//읽기형으로 파일 오픈
+	FILE* readContents_fp = fopen("text.txt", "r");
 
 	printContents(readContents_fp);
 
@@ -31,17 +33,18 @@ void realMain()
 	{
 		if (kbhit())
 		{
-			if (getch() == 'x')
+			if (getch() == 'x')h
 			{
 				//프로그램 종료
 				return;
 			}
 
-			//메모 작성
-			//쓰기형으로 파일 오픈
+				//메모 작성
+				//쓰기형으로 파일 오픈
 			FILE* saveContents_fp = fopen("text.txt", "w");
 
 			saveContents(saveContents_fp);
+			SetRegistry(ConverCtoWC("memoP"), route);
 
 			fclose(saveContents_fp);
 
@@ -88,6 +91,21 @@ void saveContents(FILE* saveContents_fp)
 	fprintf(saveContents_fp, "%s", saveContentsArr);
 }
 
+//char형에서 w_char형으로 바꿈
+wchar_t* ConverCtoWC(char* str)
+{
+	wchar_t* res;														//wchar형 변수
+	int strSize = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, NULL);  //멀티바이트 크기 계산 길이
+
+																		//메모리 할당
+	res = new WCHAR[strSize];
+
+	//형변환
+	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, res, strSize);
+
+	return res;
+}
+
 //레지스트리에 등록하는 함수
 //출처 : whiteat.com/WhiteAT_c/3288
 //
@@ -102,15 +120,16 @@ void saveContents(FILE* saveContents_fp)
 static int SetRegistry(LPCWSTR IpValueName, LPCWSTR IpExeFile)
 {
 	HKEY hKey;		//레지스트리 파일을 연 후 핸들값을 저장할 곳
-	long lRes;		//
+	long lRes;		//레지스트리 등록에 사용되는 변수
 
-	//인자가 NULL이면 Fail
+					//인자가 NULL이면 Fail
 	if (IpValueName == NULL || IpExeFile == NULL)
 	{
 		return 0;
 	}
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, (LPCWSTR)"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce", 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, ConverCtoWC("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\RunOnce"), 0, KEY_WRITE, &hKey) != ERROR_SUCCESS)
 	{
+		printf("fail\n");
 		return 0;
 	}
 
