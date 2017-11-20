@@ -19,10 +19,10 @@ int main()
 //메인
 void realMain()
 {
-	char    ch;																			//입력된 명령어
-	LPCWSTR route = L"C:\\Users\\dsm2017\\Documents\\SmartMemo.exe";					//exe파일의 경로
+	char    ch;																		//입력된 명령어
+	LPCWSTR route = L"C:\\Users\\dsm2017\\Desktop\\SmartMemo.exe";					//exe파일의 경로
 
-																						//읽기형으로 파일 오픈
+																					//읽기형으로 파일 오픈
 	FILE* readContents_fp = fopen("text.txt", "r");
 
 	printContents(readContents_fp);
