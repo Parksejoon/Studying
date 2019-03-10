@@ -66,11 +66,42 @@ void insert(int n)
 	}
 }
 
-void show()
+void pre_order(Node* node)
+{
+	if (node != NULL)
+	{
+		printf("%d ", node->value);
+		pre_order(node->left);
+		pre_order(node->right);
+	}
+}
+
+void in_order(Node* node)
+{
+	if (node != NULL)
+	{
+		in_order(node->left);
+		printf("%d ", node->value);
+		in_order(node->right);
+	}
+}
+
+void post_order(Node* node)
+{
+	if (node != NULL)
+	{
+		post_order(node->left);
+		post_order(node->right);
+		printf("%d ", node->value);
+	}
+}
+
+void level_order()
 {
 	if (tree.root == NULL)
 	{
 		printf("Empty\n");
+		return;
 	}
 
 	queue<Node*> q;
@@ -104,5 +135,12 @@ int main(void)
 	insert(3);
 	insert(4);
 
-	show();
+	level_order();
+
+	pre_order(tree.root);
+	printf("\n");
+	in_order(tree.root);
+	printf("\n");
+	post_order(tree.root);
+	printf("\n");
 }
